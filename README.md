@@ -14,4 +14,4 @@ In The Future
 -
 It'd be nice to flesh this out a little bit more, into a comprehensive package for managing Gists (i.e. able to clone to a specified location, push/pull, etc.). I'll get around to it once I have a bit more free time and ability to work on this.
 
-    Note: I did not encapsulate this in a class as a design decision. I decided that for the sake of convenience, it would be better as a simple script for now.
+>Note: I did not encapsulate this in a class as a design decision. I decided that for the sake of convenience, it would be better as a simple script for now.
