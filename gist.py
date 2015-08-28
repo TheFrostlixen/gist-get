@@ -1,6 +1,7 @@
 import urllib2
 import json
 import os
+from Tkinter import Tk
 
 # Print title
 print "GIST.py  by Matt \'TheFrostlixen\' Fredrickson 2015"
@@ -28,10 +29,14 @@ for index in range( len(jsData) ):
 # Get gist id from user selection 
 selection = raw_input("Select Gist index: ")
 id = jsData[int(selection)]["id"]
-print id
+print "\'{0}\' copied to clipboard.".format(id)
 
-# clone the gist to local system (or some other method of copying)
-os.system("git clone https://gist.github.com/{0}.git".format(id))
+# copy ID to user's clipboard (ungodly hack, this is mildly gross but works xplatform so hey)
+hwnd = Tk()
+hwnd.withdraw()
+hwnd.clipboard_clear()
+hwnd.clipboard_append( id )
 
 # wait for user input to kill
 raw_input()
+hwnd.destroy()
