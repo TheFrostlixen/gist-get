@@ -28,14 +28,14 @@ for index in range( len(jsData) ):
 
 # Get gist id from user selection 
 selection = raw_input("Select Gist index: ")
-id = jsData[int(selection)]["id"]
-print "\'{0}\' copied to clipboard.".format(id)
+id = jsData[int(selection)]["git_pull_url"]
 
-# copy ID to user's clipboard (ungodly hack, this is mildly gross but works xplatform so hey)
+# copy ID to user's clipboard (this is mildly gross but works xplatform so hey)
 hwnd = Tk()
 hwnd.withdraw()
 hwnd.clipboard_clear()
 hwnd.clipboard_append( id )
+print "\'{0}\' copied to clipboard.".format(id)
 
 # wait for user input to kill
 raw_input()
