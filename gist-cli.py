@@ -1,11 +1,10 @@
-# Header title
-print "GIST-CLI.py  by Matt \'TheFrostlixen\' Fredrickson 2015\n--------"
+import sys
 
 # Links input text to relevant function/operation
 def interpret_cmd(arg):
 	switch = {
 		'a': toString('hello'),
-		'b': toString( 0 ),
+		'b': toString( 12 ),
 	}
 	return switch.get( arg, "Command \'{0}\' not recognized...\nAvailable commands: {1}".format(arg,printHelp(switch.items())) )
 	
@@ -21,8 +20,9 @@ def printHelp(arr):
 		help += key
 	return help
 
-# Program loop
-while True:
-	cmds = raw_input('$ ').split()
-	if len(cmds) > 0:
-		print interpret_cmd( cmds[0] )
+# Program 
+#cmds = process.argv.split()
+#if len(cmds) > 0:
+#	print interpret_cmd( cmds[0] )
+for s in sys.argv:
+	print s
