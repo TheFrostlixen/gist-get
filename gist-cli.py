@@ -1,7 +1,7 @@
 import sys
 
 # Links input text to relevant function/operation
-def interpret_cmd(arg):
+def interpret_cmd(cmd, args):
 	# build a dictionary of commands to functions
 	switch = {
 		'a': toString('hello'),
@@ -9,7 +9,7 @@ def interpret_cmd(arg):
 	}
 	
 	# execute function call or return help message
-	return switch.get( arg, printHelp(arg,switch.items()) )
+	return switch.get( cmd, printHelp(cmd,switch.items()) )
 
 # Print command error & help message (available commands)
 def printHelp(c, arr):
@@ -29,4 +29,4 @@ def toString(arg):
 # System-level entry point
 cmds = sys.argv[1:]
 if len(cmds) > 0:
-	print interpret_cmd( cmds[0] )
+	print interpret_cmd( cmds[0], cmds[1:] )
