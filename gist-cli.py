@@ -4,12 +4,13 @@ import sys
 def interpret_cmd(cmd, args):
 	# build a dictionary of commands to functions
 	switch = {
-		'a': toString('hello'),
-		'b': toString( 12 ),
+		'a': func1,
+		'b': func2,
 	}
 	
 	# execute function call or return help message
-	return switch.get( cmd, printHelp(cmd,switch.items()) )
+	func = switch.get( cmd, printHelp(cmd,switch.items()) )
+	return func()
 
 # Print command error & help message (available commands)
 def printHelp(c, arr):
@@ -23,8 +24,12 @@ def printHelp(c, arr):
 	return help
 
 # Gist-CLI function definitions
-def toString(arg):
-	return str(arg)
+def func1():
+	print "fail"
+	return 'hello'
+
+def func2():
+	return 'world'
 
 # System-level entry point
 cmds = sys.argv[1:]
