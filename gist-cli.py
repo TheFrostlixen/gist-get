@@ -1,4 +1,6 @@
 import sys
+import json
+from urllib2 import urlopen, HTTPError
 
 # Links input text to relevant function/operation
 def interpret_cmd(cmd, args):
@@ -6,11 +8,21 @@ def interpret_cmd(cmd, args):
 	switch = {
 		'a': func1,
 		'b': func2,
+		'list': list,
+		'clone': None,
+		'push': None,
+		'pull': None,
 	}
 	
+	# retrieve function pointer
+	func = switch.get( cmd )
+	
 	# execute function call or return help message
-	func = switch.get( cmd, printHelp(cmd,switch.items()) )
-	return func()
+	try:
+		value = func( args )
+	except TypeError:
+		value = printHelp( cmd, switch.items() )
+	return value
 
 # Print command error & help message (available commands)
 def printHelp(c, arr):
@@ -23,14 +35,44 @@ def printHelp(c, arr):
 		help += key		# finally, add the command string itself
 	return help
 
-# Gist-CLI function definitions
-def func1():
+# === Gist-CLI function definitions ===
+# argv : [UNUSED]
+def func1( argv ):
 	print "fail"
 	return 'hello'
 
-def func2():
+# argv : [UNUSED]
+def func2( argv ):
 	return 'world'
 
+# argv : username
+def list( argv ):
+	# get JSON data for supplied username
+	jsData = GrabJson( argv[0] )
+
+	# Get all of the user's gists, display as description + files
+	string = ""
+	for index in range( len(jsData) ):
+		# Find all of the files for the gist
+		files = ""
+		for key,el in jsData[index]["files"].items():
+			if files != "":
+				files += ", " # comma separation!
+			files += key
+
+		# Display gist with files listed below
+		string += "{0}.\t{1}\n\t[{2}]\n\n".format(index+1, jsData[index]["description"], files)
+	
+	return string;
+	
+
+# === Internal helper functions ===
+def GrabJson(usern):
+	# grab JSON data from github api
+	http = urlopen( 'https://api.github.com/users/{0}/gists'.format(usern) )
+	jsData = json.loads( http.read().decode("utf-8") )
+	return jsData
+	
 # System-level entry point
 cmds = sys.argv[1:]
 if len(cmds) > 0:
