@@ -69,8 +69,13 @@ def list( argv ):
 # === Internal helper functions ===
 def GrabJson(usern):
 	# grab JSON data from github api
-	http = urlopen( 'https://api.github.com/users/{0}/gists'.format(usern) )
-	jsData = json.loads( http.read().decode("utf-8") )
+	try:
+		http = urlopen( 'https://api.github.com/users/{0}/gists'.format(usern) )
+		jsData = json.loads( http.read().decode("utf-8") )
+	except HTTPError:
+		return "ERROR: Could not find or parse gist data."
+	except IndexError:
+		return "ERROR: Username not supplied."
 	return jsData
 	
 # System-level entry point
