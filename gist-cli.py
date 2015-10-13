@@ -1,6 +1,17 @@
+#-------------------------#
+# AUTHOR: Matt Fredrickson
+# GITHUB: TheFrostlixen
+# DATE: 
+#-------------------------#
 import sys
 import json
+from os import system
 from urllib2 import urlopen, HTTPError
+
+### TODO:
+### 	implement clone
+### 	make gist independent of git
+### 	yank individual files (not clone the repo)
 
 # Links input text to relevant function/operation
 def interpret_cmd(cmd, args):
@@ -8,8 +19,8 @@ def interpret_cmd(cmd, args):
 	switch = {
 		'list': list,
 		'clone': None,
-		'push': None,
-		'pull': None,
+		'push': push,
+		'pull': pull,
 	}
 	
 	# retrieve function pointer
@@ -58,13 +69,34 @@ def list( argv ):
 	
 	return string;
 
+### argv : 0:user, 1:filename, 2+:git clone args
+def clone( argv ):
+	# find user repo with matching filenames
+		# find any duplicates and prompt for user selection?
+	# retrieve git_pull_url
+	# run system 'git clone' to retrieve
+
+### argv : git push args
+def push( argv ):
+	try:
+		system('git push ' + argv )
+	except:
+		return 'git push failed'
+
+### argv : git pull args
+def pull( argv ):
+	try:
+		system('git pull ' + argv )
+	except:
+		return 'git pull failed'
+	
 # === Internal helper functions ===
 def GrabJson( argv ):
 	# grab JSON data from github api
 	try:
 		http = urlopen( 'https://api.github.com/users/{0}/gists'.format(argv[0]) )
 		jsData = json.loads( http.read().decode("utf-8") )
-	except HTTPError:
+	except HTTPError, ValueError:
 		raise Exception("ERROR: Could not find or parse gist data.")
 	except IndexError:
 		raise Exception("ERROR: Username not supplied.")
