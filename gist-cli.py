@@ -75,6 +75,7 @@ def clone( argv ):
 		# find any duplicates and prompt for user selection?
 	# retrieve git_pull_url
 	# run system 'git clone' to retrieve
+	return ""
 
 ### argv : git push args
 def push( argv ):
