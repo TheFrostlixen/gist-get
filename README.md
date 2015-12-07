@@ -16,19 +16,15 @@ It simply uses a JSON string from GitHub's publicly available API, and parses th
 
 ##gist-cli.py & simulator.py
 
-This project now contains a Gist command line interpretter (gist-cli.py), and a terminal simulator for running commands through said interpretter (simulator.py). 
+This project now contains a Gist command line interpretter (gist-cli.py), and a terminal simulator for running commands through said interpretter (simulator.py).
 
 Usage
 -
 You may either:
 
-- Execute
-    simulator.py
-and run gist commands through that **OR**
+- Execute *simulator.py* and run gist commands through that **OR**
 
-- Execute
-    gist-cli.py {arg1} {arg2} ...
-in your terminal.
+- Execute *gist-cli.py {arg1} {arg2} ...* in your terminal.
 
 >Note: On Unix systems (or Windows systems without Python in the PATH), you must prepend the "python" command in your terminal. You'll need to change gist-cli.py to start after the 2nd argument, otherwise you'll end up with the file path in your arg list.
 
