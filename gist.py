@@ -41,7 +41,26 @@ def printHelp(c, arr):
 
 # === Gist-CLI function definitions ===
 def help( argv ):
-	return " ".join(argv)
+	if not argv:
+		print "Available commands: "
+		print "    help                             Show this help message, or detailed help about another command."
+		print "    list [USERNAME]                  List all gists that belong to the username supplied."
+		print "    clone [USERNAME]/[FILE] [ARGS]   Clone the repository from [USERNAME] containing [FILENAME]."
+	else if argv[0] == "help":
+		print "u cheeky bugger"
+	else if argv[0] == "list":
+		print "LIST [USERNAME]"
+		print " USERNAME: Username on GitHub."
+		print "  Program will list all gists that belong to a given user."
+		print "  Displays gist description, files associated, and repo ID."
+	else if argv[0] == "clone":
+		print "CLONE [USERNAME]/[FILE] [ARGS]"
+		print " USERNAME: Username on GitHub."
+		print " FILE: A file contained within a gist on GitHub."
+		print " ARGS: Any valid arguments that would be supplied to a normal 'GIT CLONE' command."
+		print "  Clones the repository from [USERNAME] containing [FILENAME]."
+		print "  Operates using 'GIT CLONE' and supplies the appropriate repo URL."
+	return ""
 
 ### argv : [USERNAME]
 def list( argv ):
