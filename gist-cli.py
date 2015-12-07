@@ -1,26 +1,20 @@
 #-------------------------#
 # AUTHOR: Matt Fredrickson
 # GITHUB: TheFrostlixen
-# DATE: 
+# DATE: DEC 07 2015
 #-------------------------#
 import sys
 import json
 from os import system
 from urllib2 import urlopen, HTTPError
 
-### TODO:
-### 	implement clone
-### 	make gist independent of git
-### 	yank individual files (not clone the repo)
-
 # Links input text to relevant function/operation
 def interpret_cmd(cmd, args):
 	# build a dictionary of commands to functions
 	switch = {
+		'help': help,
 		'list': list,
-		'clone': None,
-		'push': push,
-		'pull': pull,
+		'clone': clone,
 	}
 	
 	# retrieve function pointer
@@ -46,7 +40,10 @@ def printHelp(c, arr):
 	return help
 
 # === Gist-CLI function definitions ===
-### argv : username
+def help( argv ):
+	return " ".join(argv)
+
+### argv : [USERNAME]
 def list( argv ):
 	# get JSON data for supplied username
 	try:
@@ -69,32 +66,28 @@ def list( argv ):
 	
 	return string;
 
-### argv : 0:user, 1:filename, 2+:git clone args
+### argv : 0:[USERNAME]/[FILENAME], 1+:git clone args
 def clone( argv ):
-	# find user repo with matching filenames
-		# find any duplicates and prompt for user selection?
-	# retrieve git_pull_url
-	# run system 'git clone' to retrieve
-	return ""
-
-### argv : git push args
-def push( argv ):
+	search = argv[0].split('/')
 	try:
-		system('git push ' + argv )
-	except:
-		return 'git push failed'
-
-### argv : git pull args
-def pull( argv ):
-	try:
-		system('git pull ' + argv )
-	except:
-		return 'git pull failed'
+		print search
+		jsData = GrabJson( search )
+	except Exception as ex:
+		return ex
 	
+	for index in range( len(jsData) ):
+		for key,el in jsData[index]["files"].items():
+			if key == search[1]:
+				argv[0] = jsData[index]["git_pull_url"];
+	result = " ".join(argv)
+	system("git clone " + result)
+	return result
+
 # === Internal helper functions ===
 def GrabJson( argv ):
 	# grab JSON data from github api
 	try:
+		print 'https://api.github.com/users/{0}/gists'.format(argv[0])
 		http = urlopen( 'https://api.github.com/users/{0}/gists'.format(argv[0]) )
 		jsData = json.loads( http.read().decode("utf-8") )
 	except HTTPError, ValueError:
@@ -107,3 +100,4 @@ def GrabJson( argv ):
 cmds = sys.argv[1:]
 if len(cmds) > 0:
 	print interpret_cmd( cmds[0], cmds[1:] )
+	print
