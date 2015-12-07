@@ -7,4 +7,4 @@ print "GIST-CLI.py  by Matt \'TheFrostlixen\' Fredrickson 2015\n--------"
 while True:
 	cmds = raw_input('$ ')
 	if len(cmds) > 0:
-		os.system("(gist-cli.py " + cmds + ")")
+		os.system("(gist.py " + cmds + ")")

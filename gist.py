@@ -1,27 +1,58 @@
-import urllib2
+#-------------------------#
+# AUTHOR: Matt Fredrickson
+# GITHUB: TheFrostlixen
+# DATE: DEC 07 2015
+#-------------------------#
+import sys
 import json
-from Tkinter import Tk
+from os import system
+from urllib2 import urlopen, HTTPError
 
-# Header title
-print "GIST.py  by Matt \'TheFrostlixen\' Fredrickson 2015"
+# Links input text to relevant function/operation
+def interpret_cmd(cmd, args):
+	# build a dictionary of commands to functions
+	switch = {
+		'help': help,
+		'list': list,
+		'clone': clone,
+	}
+	
+	# retrieve function pointer
+	func = switch.get( cmd )
+	
+	# execute function call or return help message
+	try:
+		value = func( args )
+	except TypeError:
+		value = printHelp( cmd, switch.items() )
+	
+	return value
 
-# Get username to query and make the JSON API request
-username = raw_input("Username: ")
-http = urllib2.urlopen('https://api.github.com/users/{0}/gists'.format(username))
-jsData = json.loads( http.read().decode("utf-8") )
+# Print command error & help message (available commands)
+def printHelp(c, arr):
+	help = ""			# start blank to avoid prepended commas
+	for key,val in arr:
+		if help != "":	# add the comma separation! (only when items are already listed though)
+			help += ", "
+		else:			# string is empty so start building
+			help = "Command \'{0}\' not recognized...\nAvailable commands: ".format(c)
+		help += key		# finally, add the command string itself
+	return help
 
-# Set up for clipboard ops
-hwnd = Tk()
-hwnd.withdraw()
+# === Gist-CLI function definitions ===
+def help( argv ):
+	return " ".join(argv)
 
-while True:
-	# Print header/username info
-	print "--------\nDisplaying GISTs for user {0}".format(username)
-
-	# Menu option 0 for Quit.
-	print "0.\tQuit\n"
-
+### argv : [USERNAME]
+def list( argv ):
+	# get JSON data for supplied username
+	try:
+		jsData = GrabJson( argv )
+	except Exception as ex:
+		return ex
+	
 	# Get all of the user's gists, display as description + files
+	string = ""
 	for index in range( len(jsData) ):
 		# Find all of the files for the gist
 		files = ""
@@ -29,21 +60,44 @@ while True:
 			if files != "":
 				files += ", " # comma separation!
 			files += key
-
+		
 		# Display gist with files listed below
-		print "{0}.\t{1}\n\t[{2}]\n".format(index+1, jsData[index]["description"], files)
+		string += "{0}.\t{1}\n\t[{2}]\n\n".format(index+1, jsData[index]["description"], files)
+	
+	return string;
 
-	# Retrieve gist id based on user input (0 to quit)
-	selection = int( raw_input("Select Gist index: ") )
-	if selection == 0:
-		break
-	id = jsData[selection-1]["git_pull_url"]
+### argv : 0:[USERNAME]/[FILENAME], 1+:git clone args
+def clone( argv ):
+	search = argv[0].split('/')
+	try:
+		print search
+		jsData = GrabJson( search )
+	except Exception as ex:
+		return ex
+	
+	for index in range( len(jsData) ):
+		for key,el in jsData[index]["files"].items():
+			if key == search[1]:
+				argv[0] = jsData[index]["git_pull_url"];
+	result = " ".join(argv)
+	system("git clone " + result)
+	return result
 
-	# copy ID to user's clipboard
-	hwnd.clipboard_clear()
-	hwnd.clipboard_append( id )
-	print "\'{0}\' copied to clipboard.".format(id)
+# === Internal helper functions ===
+def GrabJson( argv ):
+	# grab JSON data from github api
+	try:
+		print 'https://api.github.com/users/{0}/gists'.format(argv[0])
+		http = urlopen( 'https://api.github.com/users/{0}/gists'.format(argv[0]) )
+		jsData = json.loads( http.read().decode("utf-8") )
+	except HTTPError, ValueError:
+		raise Exception("ERROR: Could not find or parse gist data.")
+	except IndexError:
+		raise Exception("ERROR: Username not supplied.")
+	return jsData
 
-# Destroy window for clipboard ops
-hwnd.destroy()
-
+# === System-level entry point ===
+cmds = sys.argv[1:]
+if len(cmds) > 0:
+	print interpret_cmd( cmds[0], cmds[1:] )
+	print
