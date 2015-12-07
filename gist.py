@@ -41,25 +41,28 @@ def printHelp(c, arr):
 
 # === Gist-CLI function definitions ===
 def help( argv ):
-	if not argv:
-		print "Available commands: "
-		print "    help                             Show this help message, or detailed help about another command."
-		print "    list [USERNAME]                  List all gists that belong to the username supplied."
-		print "    clone [USERNAME]/[FILE] [ARGS]   Clone the repository from [USERNAME] containing [FILENAME]."
-	else if argv[0] == "help":
+	if argv and argv[0] == "help":
 		print "u cheeky bugger"
-	else if argv[0] == "list":
+	elif argv and argv[0] == "list":
 		print "LIST [USERNAME]"
-		print " USERNAME: Username on GitHub."
 		print "  Program will list all gists that belong to a given user."
 		print "  Displays gist description, files associated, and repo ID."
-	else if argv[0] == "clone":
-		print "CLONE [USERNAME]/[FILE] [ARGS]"
 		print " USERNAME: Username on GitHub."
-		print " FILE: A file contained within a gist on GitHub."
-		print " ARGS: Any valid arguments that would be supplied to a normal 'GIT CLONE' command."
+	elif argv and argv[0] == "clone":
+		print "CLONE [USERNAME]/[FILE] [ARGS]"
 		print "  Clones the repository from [USERNAME] containing [FILENAME]."
 		print "  Operates using 'GIT CLONE' and supplies the appropriate repo URL."
+		print " USERNAME: Username on GitHub."
+		print " FILE: A file contained within a gist on GitHub."
+		print " ARGS: Any valid arguments for a normal 'GIT CLONE' command."
+	else:
+		print "Available commands: "
+		print "    HELP"
+		print "        Show this help message, or detailed help about another command."
+		print "    LIST [USERNAME]"
+		print "        List all gists that belong to the username supplied."
+		print "    CLONE [USERNAME]/[FILE] [ARGS]"
+		print "        Clone the repository from [USERNAME] containing [FILENAME]."
 	return ""
 
 ### argv : [USERNAME]
@@ -89,7 +92,6 @@ def list( argv ):
 def clone( argv ):
 	search = argv[0].split('/')
 	try:
-		print search
 		jsData = GrabJson( search )
 	except Exception as ex:
 		return ex
@@ -106,7 +108,6 @@ def clone( argv ):
 def GrabJson( argv ):
 	# grab JSON data from github api
 	try:
-		print 'https://api.github.com/users/{0}/gists'.format(argv[0])
 		http = urlopen( 'https://api.github.com/users/{0}/gists'.format(argv[0]) )
 		jsData = json.loads( http.read().decode("utf-8") )
 	except HTTPError, ValueError:
