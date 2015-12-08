@@ -86,6 +86,8 @@ def list( argv ):
 		# Display gist with files listed below
 		string += "{0}.\t{1} ({2})\n\t[{3}]\n\n".format(index+1, jsData[index]["description"], jsData[index]["id"], files)
 	
+	if len(jsData) == 0:
+		return "ERROR: No gists found for user '{0}'.".format(argv[0])
 	return string.strip();
 
 ### argv : 0:[USERNAME]/[FILENAME], 1+:git clone args
@@ -97,12 +99,14 @@ def clone( argv ):
 		except Exception as ex:
 			return ex
 		
+		if len(jsData) == 0:
+			raise IndexError('Repo path not supplied.')
 		for index in range( len(jsData) ):
 			for key,el in jsData[index]["files"].items():
 				if key.lower() == search[1].lower():
 					result = jsData[index]["git_pull_url"];
-		result += " ".join( argv[1:] )
-		system("git clone " + result)
+					result += " " + " ".join( argv[1:] )
+					system("git clone " + result)
 	except IndexError as ie:
 		return "ERROR: Repo path not supplied.";
 	except UnboundLocalError as ue:
@@ -125,5 +129,8 @@ def GrabJson( argv ):
 # === System-level entry point ===
 cmds = sys.argv[1:]
 if len(cmds) > 0:
-	print interpret_cmd( cmds[0], cmds[1:] )
-	print
+	try:
+		print interpret_cmd( cmds[0], cmds[1:] )
+		print
+	except KeyboardInterrupt:
+		print
