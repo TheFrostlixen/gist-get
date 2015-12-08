@@ -90,19 +90,25 @@ def list( argv ):
 
 ### argv : 0:[USERNAME]/[FILENAME], 1+:git clone args
 def clone( argv ):
-	search = argv[0].split('/')
 	try:
-		jsData = GrabJson( search )
-	except Exception as ex:
-		return ex
-	
-	for index in range( len(jsData) ):
-		for key,el in jsData[index]["files"].items():
-			if key == search[1]:
-				argv[0] = jsData[index]["git_pull_url"];
-	result = " ".join(argv)
-	system("git clone " + result)
-	return result
+		search = argv[0].split('/')
+		try:
+			jsData = GrabJson( search )
+		except Exception as ex:
+			return ex
+		
+		for index in range( len(jsData) ):
+			for key,el in jsData[index]["files"].items():
+				if key.lower() == search[1].lower():
+					result = jsData[index]["git_pull_url"];
+		result += " ".join( argv[1:] )
+		system("git clone " + result)
+	except IndexError as ie:
+		return "ERROR: Repo path not supplied.";
+	except UnboundLocalError as ue:
+		return "ERROR: Could not find or parse gist data."
+		
+	return ""
 
 # === Internal helper functions ===
 def GrabJson( argv ):
