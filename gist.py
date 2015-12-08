@@ -84,9 +84,9 @@ def list( argv ):
 			files += key
 		
 		# Display gist with files listed below
-		string += "{0}.\t{1}\n\t[{2}]\n\n".format(index+1, jsData[index]["description"], files)
+		string += "{0}.\t{1} ({2})\n\t[{3}]\n\n".format(index+1, jsData[index]["description"], jsData[index]["id"], files)
 	
-	return string;
+	return string.strip();
 
 ### argv : 0:[USERNAME]/[FILENAME], 1+:git clone args
 def clone( argv ):
