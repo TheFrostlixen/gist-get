@@ -1,8 +1,6 @@
-#Gist-Get API
+#Gist-Get CLI
 
-##gist.py
-
-A very simple Python CLI script that uses GitHub's API to allow users to quickly retrieve Gists hosted on GitHub.
+A very simple Python CLI script that uses GitHub's API to allow users to quickly retrieve Gists hosted on GitHub. This uses [Github's API](https://developer.github.com/v3/) which *does* have a [limit](https://developer.github.com/v3/#rate-limiting) for how many times it can be called per hour.
 
 The Idea
 -
@@ -22,9 +20,9 @@ Using it is simple! Eventually I am going to set this up so all you need to do i
 
 This was my first go at creating a Gist interface. It uses a menu to display all of the gists (by description and files) a particular user has, and allows the user to select one. It outputs a string that is the repo name, and will copy the repo name to the user's clipboard.
 
-##simulator.py
+##gist.py & simulator.py
 
-Simulator.py is intended to be a reusable test environment for the interpreter script, without having to reload the script each time a change is made. It is just a terminal simulator that pipes commands to the actual program.
+Simulator.py is intended to be a reusable test environment for the interpreter script, without having to reload the environment each time a change is made to the script. It is just a terminal simulator that pipes commands to the actual program (gist.py).
 
 Usage
 -
