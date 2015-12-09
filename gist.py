@@ -15,6 +15,7 @@ def interpret_cmd(cmd, args):
 		'help': help,
 		'list': list,
 		'clone': clone,
+		'cloned': cloned,
 	}
 	
 	# retrieve function pointer
@@ -55,6 +56,15 @@ def help( argv ):
 		print " USERNAME: Username on GitHub."
 		print " FILE: A file contained within a gist on GitHub."
 		print " ARGS: Any valid arguments for a normal 'GIT CLONE' command."
+	elif argv and argv[0] == "cloned":
+		print "CLONED [USERNAME]/[DESC] [ARGS]"
+		print "  Clones the repository from [USERNAME] with a description containing [DESC]."
+		print "  Operates using 'GIT CLONE' and supplies the appropriate repo URL."
+		print "  If DESC is more than one word, it should be contained within quotes as follows:"
+		print "   cloned thefrostlixen/\"my description from a gist\""
+		print " USERNAME: Username on GitHub."
+		print " DESC: A string contained within a gist's description on GitHub."
+		print " ARGS: Any valid arguments for a normal 'GIT CLONE' command."
 	else:
 		print "Available commands: "
 		print "    HELP"
@@ -63,6 +73,8 @@ def help( argv ):
 		print "        List all gists that belong to the username supplied."
 		print "    CLONE [USERNAME]/[FILE] [ARGS]"
 		print "        Clone the repository from [USERNAME] containing [FILENAME]."
+		print "    CLONE [USERNAME]/[DESC] [ARGS]"
+		print "        Clone the repository from [USERNAME] with a description containing [DESC]."
 	return ""
 
 ### argv : [USERNAME]
@@ -107,6 +119,29 @@ def clone( argv ):
 					result = jsData[index]["git_pull_url"];
 					result += " " + " ".join( argv[1:] )
 					system("git clone " + result)
+	except IndexError as ie:
+		return "ERROR: Repo path not supplied.";
+	except UnboundLocalError as ue:
+		return "ERROR: Could not find or parse gist data."
+		
+	return ""
+
+### argv : 0:[USERNAME]/[DESC], 1+:git clone args
+def cloned( argv ):
+	try:
+		search = argv[0].split('/')
+		try:
+			jsData = GrabJson( search )
+		except Exception as ex:
+			return ex
+		
+		if len(jsData) == 0:
+			raise IndexError('Repo path not supplied.')
+		for index in range( len(jsData) ):
+			if search[1].lower() in jsData[index]["description"].lower():
+				result = jsData[index]["git_pull_url"];
+				result += " " + " ".join( argv[1:] )
+				system("git clone " + result)
 	except IndexError as ie:
 		return "ERROR: Repo path not supplied.";
 	except UnboundLocalError as ue:
