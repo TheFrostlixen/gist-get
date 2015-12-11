@@ -142,10 +142,12 @@ def cloned( argv ):
 				result = jsData[index]["git_pull_url"];
 				result += " " + " ".join( argv[1:] )
 				system("git clone " + result)
-	except IndexError as ie:
+	except IndexError:
 		return "ERROR: Repo path not supplied.";
-	except UnboundLocalError as ue:
+	except UnboundLocalError:
 		return "ERROR: Could not find or parse gist data."
+	except AttributeError:
+		return "ERROR: Gist data is invalid."
 		
 	return ""
 
