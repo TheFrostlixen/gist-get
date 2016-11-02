@@ -73,7 +73,7 @@ def help( argv ):
 		print("        List all gists that belong to the username supplied.")
 		print("    CLONE [USERNAME]/[FILE] [ARGS]")
 		print("        Clone the repository from [USERNAME] containing [FILENAME].")
-		print("    CLONE [USERNAME]/[DESC] [ARGS]")
+		print("    CLONED [USERNAME]/[DESC] [ARGS]")
 		print("        Clone the repository from [USERNAME] with a description containing [DESC].")
 	return ""
 
